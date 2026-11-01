@@ -1,0 +1,880 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HustleFinder Pro - AI Side-Hustle & Zero-Capital Income Matchmaker</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #070913;
+            color: #f1f5f9;
+        }
+        .ad-slot-box {
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(30, 41, 59, 0.45),
+                rgba(30, 41, 59, 0.45) 10px,
+                rgba(15, 23, 42, 0.75) 10px,
+                rgba(15, 23, 42, 0.75) 20px
+            );
+            border: 1px dashed rgba(100, 116, 139, 0.35);
+        }
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .quiz-card {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .quiz-card:hover {
+            transform: translateY(-2px);
+            border-color: #6366f1;
+        }
+        @media print {
+            body { background: white !important; color: #0f172a !important; padding: 0 !important; }
+            header, nav, .ad-slot-box, .no-print, #quizWizardSection, #toastBox { display: none !important; }
+            #printablePlanSection { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Master Navigation Bar -->
+    <header class="w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 flex flex-wrap justify-between items-center gap-3 shadow-2xl">
+        <div class="flex items-center gap-3">
+            <div id="btnLogoHome" class="flex items-center gap-2.5 cursor-pointer">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-600 flex items-center justify-center text-xl font-black text-white shadow-lg">
+                    ⚡
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-base font-black text-white tracking-tight">HustleFinder Pro</h1>
+                        <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">100% Zero-Capital</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">AI Side-Hustle Matchmaker & 30-Day Step-by-Step Blueprint</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Actions: Currency & Fast Demo -->
+        <div class="flex items-center gap-2">
+            <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+                <span class="text-slate-400 px-2 font-semibold">Currency:</span>
+                <select id="selectCurrency" class="bg-slate-800 text-white rounded-lg px-2 py-1 font-bold focus:outline-none cursor-pointer">
+                    <option value="$">USD ($)</option>
+                    <option value="₹" selected>INR (₹)</option>
+                    <option value="€">EUR (€)</option>
+                    <option value="£">GBP (£)</option>
+                </select>
+            </div>
+
+            <button id="btnQuickMatch" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-slate-950 font-black text-xs px-3.5 py-2 rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5" title="Fast Demo Match">
+                <span>🪄 Instant Match</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Top High-CPC AdSense Leaderboard Placement -->
+    <div class="w-full max-w-6xl mx-auto px-4 mt-3 no-print">
+        <div class="ad-slot-box rounded-2xl p-2.5 text-center flex flex-col items-center justify-center min-h-[64px]">
+            <span class="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Creator Economy & Online Business AdSense Slot (Leaderboard 728x90)</span>
+            <span class="text-xs text-slate-400 font-medium">Shopify, Freelance Platforms, Web Hosting & SaaS Offers Stream Here ($15 - $40 CPC)</span>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="w-full max-w-6xl mx-auto px-4 py-4 flex-1 flex flex-col gap-6">
+
+        <!-- ============================================== -->
+        <!-- VIEW 1: 5-STEP INTERACTIVE ASSESSMENT WIZARD   -->
+        <!-- ============================================== -->
+        <section id="quizWizardSection" class="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-8 shadow-2xl flex flex-col gap-6">
+            
+            <!-- Quiz Header & Step Progress Bar -->
+            <div class="flex flex-col gap-2 border-b border-slate-800 pb-4">
+                <div class="flex justify-between items-center text-xs">
+                    <span id="stepIndicatorLabel" class="font-bold text-amber-400 uppercase tracking-wider">Step 1 of 5: Available Time</span>
+                    <span id="progressPctLabel" class="text-slate-400 font-mono font-semibold">20% Completed</span>
+                </div>
+                <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden">
+                    <div id="progressBar" class="bg-gradient-to-r from-amber-500 to-orange-500 h-full w-1/5 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- STEP 1: TIME AVAILABLE -->
+            <div id="quizStep1" class="quiz-step flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-black text-white">How much free time can you invest per day?</h2>
+                    <p class="text-xs text-slate-400 mt-1">Be honest with your schedule. Even 1 dedicated hour can compound massively.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="1" data-val="1-2">
+                        <span class="text-3xl">☕</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">1 - 2 Hours / Day</h4>
+                            <p class="text-[11px] text-slate-400">Coffee money hustles, micro-assets, low maintenance.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="1" data-val="3-4">
+                        <span class="text-3xl">💻</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">3 - 4 Hours / Day</h4>
+                            <p class="text-[11px] text-slate-400">Serious side-gig, agency client service, weekly content.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="1" data-val="weekend">
+                        <span class="text-3xl">🗓️</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Weekends Only (5-8 hrs)</h4>
+                            <p class="text-[11px] text-slate-400">Batch-creation of digital products & templates.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="1" data-val="fulltime">
+                        <span class="text-3xl">🚀</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Full Dedication (6+ Hours)</h4>
+                            <p class="text-[11px] text-slate-400">Fast-track to replace a 9-5 job within 60 days.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: PERSONALITY & WORK STYLE -->
+            <div id="quizStep2" class="quiz-step hidden flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-black text-white">What is your personality & camera comfort?</h2>
+                    <p class="text-xs text-slate-400 mt-1">Whether you want to be completely anonymous or the face of a brand.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="2" data-val="faceless">
+                        <span class="text-3xl">👻</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">100% Anonymous / Faceless</h4>
+                            <p class="text-[11px] text-slate-400">Zero camera, no voice, pure screen recording or AI assets.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="2" data-val="creator">
+                        <span class="text-3xl">🎙️</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Comfortable with Camera / Voice</h4>
+                            <p class="text-[11px] text-slate-400">Personal branding, YouTube tutorials, podcasts, speaking.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="2" data-val="analytical">
+                        <span class="text-3xl">🧠</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Analytical & Research Oriented</h4>
+                            <p class="text-[11px] text-slate-400">Digging data, curation, spreadsheets, writing summaries.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="2" data-val="service">
+                        <span class="text-3xl">🤝</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Direct Client Communication</h4>
+                            <p class="text-[11px] text-slate-400">Solving direct problems for business owners & founders.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: SKILL & STRENGTH -->
+            <div id="quizStep3" class="quiz-step hidden flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-black text-white">What is your primary superpower or interest?</h2>
+                    <p class="text-xs text-slate-400 mt-1">Pick what feels easiest or most enjoyable for you.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="3" data-val="writing">
+                        <span class="text-3xl">✍️</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Writing & Words</h4>
+                            <p class="text-[11px] text-slate-400">Copywriting, emails, blogs, newsletters, AI editing.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="3" data-val="visual">
+                        <span class="text-3xl">🎨</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Design & Aesthetics</h4>
+                            <p class="text-[11px] text-slate-400">Canva graphics, thumbnails, UI templates, branding.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="3" data-val="tech">
+                        <span class="text-3xl">⚡</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Tech & Automation</h4>
+                            <p class="text-[11px] text-slate-400">No-code tools, Zapier automations, web setup, code.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="3" data-val="beginner">
+                        <span class="text-3xl">🌱</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Pure Beginner / Willing to Learn</h4>
+                            <p class="text-[11px] text-slate-400">No technical background, want simple copy-paste tasks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: BUDGET (ZERO-CAPITAL VALIDATION) -->
+            <div id="quizStep4" class="quiz-step hidden flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-black text-white">What is your starting capital budget?</h2>
+                    <p class="text-xs text-slate-400 mt-1">We specialize in verified $0 zero-capital models.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex flex-col items-center text-center gap-2" data-step="4" data-val="zero">
+                        <span class="text-3xl">🆓</span>
+                        <h4 class="font-bold text-white text-xs sm:text-sm">$0 (Zero Money)</h4>
+                        <p class="text-[11px] text-slate-400">100% free software & organic reach only.</p>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex flex-col items-center text-center gap-2" data-step="4" data-val="micro">
+                        <span class="text-3xl">🪙</span>
+                        <h4 class="font-bold text-white text-xs sm:text-sm">Under $50 (₹4,000)</h4>
+                        <p class="text-[11px] text-slate-400">Enough for a domain name and basic tools.</p>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex flex-col items-center text-center gap-2" data-step="4" data-val="funded">
+                        <span class="text-3xl">💳</span>
+                        <h4 class="font-bold text-white text-xs sm:text-sm">$100+ Seed Budget</h4>
+                        <p class="text-[11px] text-slate-400">Can pay for subscriptions & micro-ads.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: TIMELINE & GOAL -->
+            <div id="quizStep5" class="quiz-step hidden flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-black text-white">What is your primary income goal & timeline?</h2>
+                    <p class="text-xs text-slate-400 mt-1">Fast cash now vs compounding passive assets later.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="5" data-val="fast">
+                        <span class="text-3xl">⚡</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Fast Cash (First Dollar in 14-30 Days)</h4>
+                            <p class="text-[11px] text-slate-400">Direct freelance services or active client delivery.</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card p-4 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer flex items-center gap-3" data-step="5" data-val="passive">
+                        <span class="text-3xl">🏖️</span>
+                        <div>
+                            <h4 class="font-bold text-white text-xs sm:text-sm">Compounding Passive Income (3 - 6 Months)</h4>
+                            <p class="text-[11px] text-slate-400">Digital products, automation channels, recurring affiliates.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 2: MATCHED HUSTLE & 30-DAY ACTION ROADMAP -->
+        <!-- ============================================== -->
+        <section id="resultsSection" class="hidden flex flex-col gap-6">
+
+            <!-- Hero Match Banner -->
+            <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-indigo-950/60 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6">
+                
+                <div class="flex items-center gap-4">
+                    <div id="resIcon" class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-4xl shadow-inner flex-shrink-0">
+                        👻
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs uppercase font-black bg-amber-500 text-slate-950 px-2.5 py-0.5 rounded-full">Your Ideal Match</span>
+                            <span class="text-xs text-emerald-400 font-bold">100% Free to Start</span>
+                        </div>
+                        <h2 id="resTitle" class="text-2xl sm:text-3xl font-black text-white mt-1">Faceless YouTube & TikTok Automation</h2>
+                        <p id="resTagline" class="text-xs text-slate-300 mt-1 max-w-xl leading-relaxed">
+                            Create viral story or educational shorts without ever showing your face or recording your voice using 100% free browser tools.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button id="btnOpenShareCard" class="flex-1 md:flex-initial bg-purple-600 hover:bg-purple-500 text-white font-black text-xs px-4 py-3 rounded-2xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <span>Viral Share Card</span> <span>📸</span>
+                    </button>
+                    <button id="btnPrintRoadmap" class="flex-1 md:flex-initial bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-3 rounded-2xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <span>Print 30-Day Plan</span> <span>📄</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- 3-Column Metrics & Zero-Cost Tool Stack -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Card 1: Income Potential Timeline -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-3">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>💰</span> <span>Realistic Income Trajectory</span>
+                    </span>
+                    <div class="flex flex-col gap-2 text-xs">
+                        <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-400">Month 1 (Learning):</span>
+                            <span id="resMonth1" class="font-bold text-slate-200">₹4,000 - ₹12,000 ($50 - $150)</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-400">Month 3 (Momentum):</span>
+                            <span id="resMonth3" class="font-bold text-amber-400">₹40,000 - ₹80,000 ($500 - $1,000)</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-400">Month 6 (Scale):</span>
+                            <span id="resMonth6" class="font-black text-emerald-400">₹1,50,000+ ($2,000+/mo)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Difficulty & Scalability Score -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-3">
+                    <span class="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>📊</span> <span>Hustle Feasibility Scores</span>
+                    </span>
+                    <div class="flex flex-col gap-2.5 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">Difficulty Level:</span>
+                            <span id="resDifficultyBadge" class="font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">Beginner-Friendly</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">Passive Potential:</span>
+                            <span id="resPassiveBadge" class="font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-md">85% Scalable Passive</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">Time-to-First-Dollar:</span>
+                            <span id="resTimeDollarBadge" class="font-bold text-amber-400">14 - 21 Days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: 100% Free Software Stack -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl flex flex-col justify-between gap-3">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🛠️</span> <span>Zero-Cost Tool Stack</span>
+                    </span>
+                    <div id="resFreeStackList" class="flex flex-col gap-1.5 text-xs">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Interactive 30-Day Step-by-Step Action Plan Section -->
+            <div id="printablePlanSection" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-5">
+                <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-lg font-black text-white flex items-center gap-2">
+                            <span>📅</span> <span>Your 30-Day Step-by-Step Action Roadmap</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Check off each milestone as you progress towards your first $100 payout.</p>
+                    </div>
+                    <button id="btnRetakeQuiz" class="text-xs text-indigo-400 hover:text-indigo-300 font-bold no-print">
+                        ↺ Retake Assessment
+                    </button>
+                </div>
+
+                <!-- 4-Week Roadmap Accordion / Cards -->
+                <div id="roadmapWeeksContainer" class="flex flex-col gap-4">
+                    <!-- Week 1 to Week 4 dynamically generated -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Sponsored Partner High-Converting Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap justify-between items-center gap-3 shadow-xl no-print">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🚀</span>
+                <div>
+                    <h4 class="text-xs sm:text-sm font-black text-white">Start Your Zero-Capital Hustle with Free Industry Credits</h4>
+                    <p class="text-[11px] text-slate-400">Get free creator templates, hosting trials, and Canva Pro 30-day extended access.</p>
+                </div>
+            </div>
+            <button id="btnClaimHustleBonus" class="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shadow-lg transition active:scale-95">
+                Claim Free Credits ⚡
+            </button>
+        </div>
+
+    </main>
+
+    <!-- VIRAL HUSTLE ARCHETYPE SOCIAL CARD MODAL -->
+    <div id="cardModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-slate-900 border-2 border-purple-500/40 rounded-3xl p-5 flex flex-col items-center text-center gap-4 shadow-2xl relative">
+            <button id="btnCloseCardModal" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg p-1">&times;</button>
+            
+            <div>
+                <h3 class="font-black text-sm text-white flex items-center justify-center gap-1.5">
+                    <span>📸</span> <span>Your Viral Hustle Archetype Card</span>
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">Share on Instagram Story, WhatsApp or X to inspire your friends!</p>
+            </div>
+
+            <!-- 9:16 Canvas Graphic -->
+            <canvas id="shareCanvas" width="340" height="480" class="rounded-2xl border border-white/20 shadow-2xl bg-slate-950"></canvas>
+
+            <button id="btnDownloadCardPng" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-black py-2.5 rounded-xl text-xs shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5">
+                <span>Download Story Card</span> <span>⬇️</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastBox" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 font-black px-4 py-2 rounded-full text-xs shadow-2xl z-50 transition-all flex items-center gap-1.5">
+        <span>✨</span> <span id="toastMsg">Action completed!</span>
+    </div>
+
+    <script>
+        function notify(msg) {
+            const t = document.getElementById('toastBox');
+            document.getElementById('toastMsg').innerText = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 2300);
+        }
+
+        let currency = '₹';
+        let currencyMultiplier = 84;
+
+        // User Quiz State
+        let currentStep = 1;
+        let userAnswers = {
+            time: '1-2',
+            style: 'faceless',
+            skill: 'writing',
+            budget: 'zero',
+            goal: 'passive'
+        };
+
+        // --- Side Hustle Catalog with Complete 30-Day Blueprints ---
+        const hustleDatabase = {
+            faceless: {
+                title: 'Faceless YouTube & TikTok Automation',
+                icon: '👻',
+                tagline: 'Create viral micro-stories, history facts, or motivational shorts without recording your face or voice.',
+                archetype: 'The Ghost Creator 👻',
+                m1: 150, m3: 850, m6: 2500,
+                difficulty: 'Beginner-Friendly',
+                passivePct: '85% Scalable Passive',
+                timeToDollar: '14 - 21 Days',
+                stack: [
+                    'CapCut Desktop (100% Free Video Editor)',
+                    'Canva Free (Viral Thumbnail & Layouts)',
+                    'Audacity (Free Audio Mastering)',
+                    'Pexels & Pixabay (Free Stock Footage)'
+                ],
+                weeks: [
+                    {
+                        week: 'Week 1: Niche Selection & Studio Setup',
+                        tasks: [
+                            'Pick 1 focused evergreen niche (e.g. Unsolved Mysteries, Stoic Philosophy, or Tech Facts).',
+                            'Setup your YouTube Brand Channel and TikTok Creator Profile with matching handles.',
+                            'Download CapCut and create your first 9:16 vertical 1080x1920 editing template.'
+                        ]
+                    },
+                    {
+                        week: 'Week 2: Batch Asset Creation (First 10 Shorts)',
+                        tasks: [
+                            'Write 10 short 45-second scripts using a 3-second hook structure.',
+                            'Source copyright-free background music and matching 4K stock b-roll clips.',
+                            'Add bold, high-contrast auto-captions with word-by-word highlights.'
+                        ]
+                    },
+                    {
+                        week: 'Week 3: Daily Scheduling & Distribution',
+                        tasks: [
+                            'Upload and schedule 1 Short per day at peak hours (6 PM - 8 PM local time).',
+                            'Pin an engaging conversation starter in your own comment section.',
+                            'Analyze YouTube Studio retention graphs to optimize the first 5-second drop-off.'
+                        ]
+                    },
+                    {
+                        week: 'Week 4: Monetization & First $100',
+                        tasks: [
+                            'Add an affiliate link in your channel bio related to your niche (e.g. books, tools).',
+                            'Reach initial 10,000 views milestone and apply for Creator Rewards.',
+                            'Reinvest initial momentum into batching 20 videos for Month 2!'
+                        ]
+                    }
+                ]
+            },
+            digital_products: {
+                title: 'Micro-Digital Products & Template Architecture',
+                icon: '📑',
+                tagline: 'Package your knowledge into Notion dashboards, Google Sheet budgets, or Canva design kits.',
+                archetype: 'The Digital Architect 📑',
+                m1: 100, m3: 750, m6: 3000,
+                difficulty: 'Zero Technical Barrier',
+                passivePct: '95% Pure Passive',
+                timeToDollar: '7 - 14 Days',
+                stack: [
+                    'Gumroad Free (0% monthly fee store)',
+                    'Notion Free (Template creation)',
+                    'Google Sheets (Automated calculators)',
+                    'Pinterest & Twitter/X (Organic traffic)'
+                ],
+                weeks: [
+                    {
+                        week: 'Week 1: Problem Discovery & Asset Choice',
+                        tasks: [
+                            'Identify 1 painful organization problem (e.g. Student Study Planner or Freelance Client Tracker).',
+                            'Design the core template in Notion or Google Sheets with clean formatting and formulas.',
+                            'Set up your free Gumroad creator storefront.'
+                        ]
+                    },
+                    {
+                        week: 'Week 2: Product Packaging & Mockups',
+                        tasks: [
+                            'Create 3 aesthetic mockup graphics on Canva showcasing template features.',
+                            'Write a concise, benefit-driven product description explaining time saved.',
+                            'Price product between $5 and $19 for high-volume conversion.'
+                        ]
+                    },
+                    {
+                        week: 'Week 3: Organic Traffic Seeding',
+                        tasks: [
+                            'Post 5 aesthetic product pins on Pinterest linking directly to Gumroad.',
+                            'Share a free mini version on Reddit (r/Notion or r/freelance) to collect early 5-star reviews.',
+                            'Set up a 10% discount code for early buyers.'
+                        ]
+                    },
+                    {
+                        week: 'Week 4: Scaling to Evergreen Sales',
+                        tasks: [
+                            'Bundle 2 related templates together to double your average order value.',
+                            'Collect customer feedback to release v2.0 update.',
+                            'Hit your first $100 milestone and automate email receipts!'
+                        ]
+                    }
+                ]
+            },
+            freelance_service: {
+                title: 'High-Ticket Remote Micro-Agency Service',
+                icon: '💼',
+                tagline: 'Provide direct high-demand services like short-form video editing, copywriting, or web tuning for busy founders.',
+                archetype: 'The Growth Partner 💼',
+                m1: 250, m3: 1500, m6: 4500,
+                difficulty: 'Intermediate Skill',
+                passivePct: '40% Active / Retainer',
+                timeToDollar: '7 - 10 Days',
+                stack: [
+                    'Loom (Free client video proposals)',
+                    'ContractCraft Pro (Free contracts & NDAs)',
+                    'LinkedIn & Twitter DM (Direct outreach)',
+                    'Stripe / Wise (International payments)'
+                ],
+                weeks: [
+                    {
+                        week: 'Week 1: High-Value Offer Definition',
+                        tasks: [
+                            'Package your skill into 1 clear outcome (e.g. "I turn your long podcasts into 15 viral Reels").',
+                            'Create 2 sample portfolio pieces demonstrating before/after improvement.',
+                            'Set up a simple 1-page Notion portfolio.'
+                        ]
+                    },
+                    {
+                        week: 'Week 2: Warm & Cold Client Outreach',
+                        tasks: [
+                            'Identify 30 potential creators or founders on Twitter, YouTube, or LinkedIn.',
+                            'Record 3 personalized 60-second Loom audits offering 1 free improvement.',
+                            'Send friendly, zero-pressure direct messages.'
+                        ]
+                    },
+                    {
+                        week: 'Week 3: Closing First Client & Onboarding',
+                        tasks: [
+                            'Lock in your first client with a test package (e.g. $250 for 5 videos).',
+                            'Use ContractCraft Pro to send a clean service agreement with 50% upfront deposit.',
+                            'Deliver work 24 hours ahead of deadline to blow away expectations.'
+                        ]
+                    },
+                    {
+                        week: 'Week 4: Converting to Monthly Retainer',
+                        tasks: [
+                            'Pitch a monthly recurring retainer ($1,000/mo for ongoing weekly delivery).',
+                            'Ask for a video testimonial or written referral.',
+                            'Collect final milestone payment directly to bank account!'
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- Currency Toggle ---
+        const selectCurrency = document.getElementById('selectCurrency');
+        selectCurrency.addEventListener('change', () => {
+            currency = selectCurrency.value;
+            currencyMultiplier = (currency === '$') ? 1 : ((currency === '₹') ? 84 : ((currency === '€') ? 0.92 : 0.78));
+            if (!document.getElementById('resultsSection').classList.contains('hidden')) {
+                displayHustleResult();
+            }
+            notify(`Currency set to ${currency}`);
+        });
+
+        // --- Quiz Navigation & Interaction ---
+        document.querySelectorAll('.quiz-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const step = parseInt(card.dataset.step, 10);
+                const val = card.dataset.val;
+
+                if (step === 1) userAnswers.time = val;
+                else if (step === 2) userAnswers.style = val;
+                else if (step === 3) userAnswers.skill = val;
+                else if (step === 4) userAnswers.budget = val;
+                else if (step === 5) userAnswers.goal = val;
+
+                // Move to next step or show results
+                if (step < 5) {
+                    goToStep(step + 1);
+                } else {
+                    finishAssessment();
+                }
+            });
+        });
+
+        function goToStep(nextStep) {
+            currentStep = nextStep;
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`quizStep${currentStep}`).classList.remove('hidden');
+
+            const pct = currentStep * 20;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressPctLabel').innerText = `${pct}% Completed`;
+            document.getElementById('stepIndicatorLabel').innerText = `Step ${currentStep} of 5: Assessment`;
+        }
+
+        function finishAssessment() {
+            document.getElementById('quizWizardSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+
+            if (window.confetti) {
+                confetti({
+                    particleCount: 120,
+                    spread: 75,
+                    origin: { y: 0.55 }
+                });
+            }
+
+            displayHustleResult();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            notify('🎉 Assessment Complete! Match Revealed!');
+        }
+
+        // Match Logic: selects the best matching hustle archetype
+        function determineMatchedHustle() {
+            if (userAnswers.style === 'faceless' || userAnswers.skill === 'visual') {
+                return hustleDatabase.faceless;
+            } else if (userAnswers.goal === 'passive' || userAnswers.time === 'weekend' || userAnswers.skill === 'writing') {
+                return hustleDatabase.digital_products;
+            } else {
+                return hustleDatabase.freelance_service;
+            }
+        }
+
+        function displayHustleResult() {
+            const h = determineMatchedHustle();
+
+            document.getElementById('resIcon').innerText = h.icon;
+            document.getElementById('resTitle').innerText = h.title;
+            document.getElementById('resTagline').innerText = h.tagline;
+
+            // Formatted Currency Trajectory
+            const m1 = Math.round(h.m1 * currencyMultiplier).toLocaleString();
+            const m3 = Math.round(h.m3 * currencyMultiplier).toLocaleString();
+            const m6 = Math.round(h.m6 * currencyMultiplier).toLocaleString();
+
+            document.getElementById('resMonth1').innerText = `${currency}${m1} (Month 1)`;
+            document.getElementById('resMonth3').innerText = `${currency}${m3} (Month 3)`;
+            document.getElementById('resMonth6').innerText = `${currency}${m6}+ / month`;
+
+            document.getElementById('resDifficultyBadge').innerText = h.difficulty;
+            document.getElementById('resPassiveBadge').innerText = h.passivePct;
+            document.getElementById('resTimeDollarBadge').innerText = h.timeToDollar;
+
+            // Zero-Cost Stack
+            const stackBox = document.getElementById('resFreeStackList');
+            stackBox.innerHTML = '';
+            h.stack.forEach(tool => {
+                const row = document.createElement('div');
+                row.className = 'bg-slate-950 p-2 rounded-xl border border-slate-800 text-slate-300 font-medium flex items-center gap-1.5';
+                row.innerHTML = `<span class="text-emerald-400">✓</span> <span>${tool}</span>`;
+                stackBox.appendChild(row);
+            });
+
+            // 30-Day Step-by-Step Action Roadmap
+            const roadContainer = document.getElementById('roadmapWeeksContainer');
+            roadContainer.innerHTML = '';
+
+            h.weeks.forEach((w, wIdx) => {
+                const weekCard = document.createElement('div');
+                weekCard.className = 'bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-3 shadow-md';
+                
+                let tasksHtml = '';
+                w.tasks.forEach((task, tIdx) => {
+                    const taskId = `task_${wIdx}_${tIdx}`;
+                    tasksHtml += `
+                        <label class="flex items-start gap-3 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
+                            <input type="checkbox" id="${taskId}" class="w-4 h-4 mt-0.5 accent-amber-500 rounded cursor-pointer">
+                            <span class="text-xs text-slate-300 leading-relaxed font-medium">${task}</span>
+                        </label>
+                    `;
+                });
+
+                weekCard.innerHTML = `
+                    <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                        <span class="font-bold text-amber-400 text-xs sm:text-sm uppercase tracking-wider">${w.week}</span>
+                        <span class="text-[10px] text-slate-500 font-mono font-bold">Days ${wIdx * 7 + 1} - ${(wIdx + 1) * 7}</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        ${tasksHtml}
+                    </div>
+                `;
+
+                roadContainer.appendChild(weekCard);
+            });
+        }
+
+        // Retake Quiz
+        document.getElementById('btnRetakeQuiz').addEventListener('click', () => {
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('quizWizardSection').classList.remove('hidden');
+            goToStep(1);
+            notify('Assessment reset! Retake to explore other models.');
+        });
+
+        // Fast Demo Match
+        document.getElementById('btnQuickMatch').addEventListener('click', () => {
+            userAnswers = { time: '1-2', style: 'faceless', skill: 'visual', budget: 'zero', goal: 'passive' };
+            finishAssessment();
+        });
+
+        document.getElementById('btnLogoHome').addEventListener('click', () => {
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('quizWizardSection').classList.remove('hidden');
+            goToStep(1);
+        });
+
+        // 1-Click Print 30-Day Plan
+        document.getElementById('btnPrintRoadmap').addEventListener('click', () => {
+            notify('📄 Opening Print & PDF Download Dialog...');
+            setTimeout(() => window.print(), 350);
+        });
+
+        // --- 9:16 Viral Hustle Archetype Social Card Generator ---
+        const cardModal = document.getElementById('cardModal');
+        const shareCanvas = document.getElementById('shareCanvas');
+        const sctx = shareCanvas.getContext('2d');
+
+        function renderShareCard() {
+            const h = determineMatchedHustle();
+            const W = shareCanvas.width;
+            const H = shareCanvas.height;
+
+            // Background
+            sctx.fillStyle = '#070913';
+            sctx.fillRect(0, 0, W, H);
+
+            // Border
+            sctx.strokeStyle = '#f59e0b';
+            sctx.lineWidth = 4;
+            sctx.strokeRect(12, 12, W - 24, H - 24);
+
+            // Header
+            sctx.fillStyle = '#f59e0b';
+            sctx.font = 'bold 11px sans-serif';
+            sctx.textAlign = 'center';
+            sctx.fillText('⚡ HUSTLEFINDER AI ASSESSMENT', W / 2, 45);
+
+            sctx.fillStyle = '#ffffff';
+            sctx.font = 'black 18px sans-serif';
+            sctx.fillText('My Side Hustle Archetype', W / 2, 80);
+
+            // Archetype Icon & Badge Box
+            sctx.fillStyle = '#1e1b4b';
+            sctx.fillRect(25, 105, W - 50, 110);
+            sctx.strokeStyle = '#6366f1';
+            sctx.strokeRect(25, 105, W - 50, 110);
+
+            sctx.font = '40px sans-serif';
+            sctx.fillText(h.icon, W / 2, 155);
+
+            sctx.fillStyle = '#38bdf8';
+            sctx.font = 'black 14px sans-serif';
+            sctx.fillText(h.archetype, W / 2, 195);
+
+            // Stats
+            sctx.fillStyle = '#94a3b8';
+            sctx.font = '11px sans-serif';
+            sctx.fillText(`Target: $2,000+/mo (${currency}${Math.round(2000 * currencyMultiplier).toLocaleString()})`, W / 2, 245);
+            sctx.fillText(`Startup Cost: $0 Zero Money • Time: ${h.timeToDollar}`, W / 2, 270);
+
+            // 30-Day Blueprint Highlight Box
+            sctx.fillStyle = '#0f172a';
+            sctx.fillRect(25, 300, W - 50, 105);
+            sctx.strokeStyle = '#334155';
+            sctx.strokeRect(25, 300, W - 50, 105);
+
+            sctx.fillStyle = '#4ade80';
+            sctx.font = 'bold 11px sans-serif';
+            sctx.fillText('30-Day Step-by-Step Plan Generated!', W / 2, 330);
+
+            sctx.fillStyle = '#cbd5e1';
+            sctx.font = '10px sans-serif';
+            sctx.fillText('Week 1: Zero-cost studio setup', W / 2, 355);
+            sctx.fillText('Week 2: Batch first 10 assets', W / 2, 375);
+            sctx.fillText('Week 4: First $100 milestone achieved', W / 2, 395);
+
+            // Footer
+            sctx.fillStyle = '#64748b';
+            sctx.font = '10px sans-serif';
+            sctx.fillText('Discover yours at HustleFinder Pro • 100% Free', W / 2, 445);
+        }
+
+        document.getElementById('btnOpenShareCard').addEventListener('click', () => {
+            cardModal.classList.remove('hidden');
+            renderShareCard();
+        });
+
+        document.getElementById('btnCloseCardModal').addEventListener('click', () => {
+            cardModal.classList.add('hidden');
+        });
+
+        document.getElementById('btnDownloadCardPng').addEventListener('click', () => {
+            const url = shareCanvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `my_hustle_archetype.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            notify('📸 Hustle Archetype card downloaded! Share to Instagram/X!');
+        });
+
+        document.getElementById('btnClaimHustleBonus').addEventListener('click', () => {
+            notify('🎉 Partner creator credits & trial bundle unlocked!');
+        });
+
+        // Initialize on Load
+        window.onload = () => {
+            goToStep(1);
+        };
+    </script>
+</body>
+</html>
+```
